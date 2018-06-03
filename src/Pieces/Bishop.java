@@ -2,20 +2,26 @@ package Pieces;
 
 import Game.*;
 
-public class Bishop extends Piece {
+public class Bishop extends Piece{
 
     Type type;
 
-    public Bishop(int x, int y){
+    public Bishop(int x, int y, Player player){
         super(x,y,player);
         type = Type.BISHOP;
+        promoted = false;
     }
 
-    public Type getType() {return Type.BISHOP;}
+    public Type getType(){
+        return Type.BISHOP;
+    }
 
     public boolean isValidPath(int finalX, int finalY){
         int xDiff = Math.abs(finalX - this.x);
         int yDiff = Math.abs(finalY - this.y);
+        if (promoted){
+            if (finalX <= 1 && finalY <= 1) return true;
+        }
         return xDiff == yDiff;
     }
 
@@ -25,9 +31,9 @@ public class Bishop extends Piece {
         if (finalX - startX < 0) xDir = -1;
         if (finalY - startY < 0) yDir = -1;
 
-        int [][] path = new int [2][pairs-1];
-        if (pairs-1 > 0){
-            for (int i = 0; i < path[0].length; i++) {
+        int[][] path = new int [2][pairs-1];
+        if (pairs - 1 > 0){
+            for (int i = 0; i < path[0].length; i++){
                 path[0][i] = startX + xDir*i;
                 path[1][i] = startY + yDir*i;
             }
