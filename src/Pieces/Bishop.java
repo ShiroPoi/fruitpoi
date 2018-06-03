@@ -38,6 +38,7 @@ public class Bishop extends Piece{
                 path[1][i] = startY + yDir*i;
             }
         }
+
         return path;
     }
 }

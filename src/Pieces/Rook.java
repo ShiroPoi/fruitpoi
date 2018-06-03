@@ -17,10 +17,12 @@ public class Rook extends Piece{
     }
 
     public boolean isValidPath(int finalX, int finalY){
+        int xDiff = Math.abs(finalX - this.x);
+        int yDiff = Math.abs(finalY - this.y);
         if (promoted) {
-            if (finalX <= 1 && finalY <= 1) return true;
+            if (xDiff <= 1 && yDiff <= 1) return true;
         }
-        if((finalX == this.x) || (finalY == this.y)) {
+        if((xDiff == 0) || (yDiff == 0)) {
             return true;
         }
         return false;
@@ -48,8 +50,8 @@ public class Rook extends Piece{
         int [][] path = new int[2][pairs];
         if(pairs - 1 > 0){
             for(int i = 0; i < pairs - 1; i++){
-                path[0][i] = startX + x_dir*1;
-                path[1][i] = startY + y_dir*1;
+                path[0][i] = startX + x_dir*i;
+                path[1][i] = startY + y_dir*i;
             }
         }
 

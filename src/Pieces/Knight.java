@@ -2,18 +2,18 @@ package Pieces;
 
 import Game.*;
 
-public class Pawn extends Piece{
+public class Knight extends Piece{
 
     Type type;
 
-    public Pawn(int x, int y, Player player){
-        super(x,y,player);
-        type = Type.PAWN;
+    public Knight(int x, int y, Player player){
+        super(x, y, player);
+        type = Type.KNIGHT;
         promoted = false;
     }
 
     public Type getType(){
-        return Type.PAWN;
+        return Type.KNIGHT;
     }
 
     public boolean isValidPath(int finalX, int finalY){
@@ -25,13 +25,15 @@ public class Pawn extends Piece{
         else if (promoted){
             if (xDiff <= 1 && yDiff <= 1 && (xDiff != 0 || yDiff != 0)) return true;
         }
-        else if (xDiff == 0 && yDiff == 1) return true;
+        else if((xDiff == 1 && yDiff == 2)){
+            return true;
+        }
         return false;
     }
 
-    public int[][] drawPath(int startX, int startY, int finalX, int finalY) {
+    public int [][] drawPath(int startX, int startY, int finalX, int finalY){
         int pairs = 0;
-        int[][] path = new int[2][pairs];
+        int [][] path = new int[2][pairs];
 
         return path;
     }
