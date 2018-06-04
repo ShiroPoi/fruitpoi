@@ -1,5 +1,13 @@
 package Game;
 
 public class Player {
-    String color;
+    private Color color;
+
+    public Player(Color color) {
+      this.color = color;
+    }
+
+    public Color getColor() {
+      return color;
+    }
 }
