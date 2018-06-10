@@ -1,6 +1,6 @@
 package Game;
 
-public class Coordinate<int, int> {
+public class Coordinate {
   private int x;
   private int y;
 
@@ -9,11 +9,11 @@ public class Coordinate<int, int> {
     this.y = y;
   }
 
-  public void x() {
+  public int x() {
     return x;
   }
 
-  public void y() {
+  public int y() {
     return y;
   }
 
@@ -24,5 +24,10 @@ public class Coordinate<int, int> {
 
   public boolean equals(Coordinate coords) {
     return (this.x == coords.x && this.y == coords.y);
+  }
+
+  @Override
+  public String toString() {
+    return "(" + this.x + "," + this.y + ")";
   }
 }

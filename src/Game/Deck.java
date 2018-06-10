@@ -1,140 +1,57 @@
+package Game;
 import java.util.List;
 import java.util.ArrayList;
 
-/**
- * The Deck class represents a shuffled deck of cards.
- * It provides several operations including
- *      initialize, shuffle, deal, and check if empty.
- */
+
 public class Deck {
 
-	/**
-	 * cards contains all the cards in the deck.
-	 */
-	private List<Card> cards;
 
-	/**
-	 * size is the number of not-yet-dealt cards.
-	 * Cards are dealt from the top (highest index) down.
-	 * The next card to be dealt is at size - 1.
-	 */
-	private int size;
+	private List<Piece> pieces;
 
-
-	/**
-	 * Creates a new <code>Deck</code> instance.<BR>
-	 * It pairs each element of ranks with each element of suits,
-	 * and produces one of the corresponding card.
-	 * @param ranks is an array containing all of the card ranks.
-	 * @param suits is an array containing all of the card suits.
-	 * @param values is an array containing all of the card point values.
-	 */
-	public Deck(String[] ranks, String[] suits, int[] values) {
-		/* *** TO BE IMPLEMENTED IN ACTIVITY 2 *** */
-		cards = new ArrayList<Card>();
-		size = 0;
-		for(int i = 0;i<suits.length;i++)
-		{
-			for(int j = 0;j<ranks.length;j++)
-			{
-				Card temp = new Card(ranks[j],suits[i],values[j]);
-				cards.add(temp);
-				size++;
-			}
-		}
-		shuffle();
+	public Deck(List<Piece> newPieces) { // Pieces on board
+		pieces = newPieces;
 	}
 
+	public Deck() { // Dead pieces that you own
+		pieces = new ArrayList<Piece>();
+	}
 
-	/**
-	 * Determines if this deck is empty (no undealt cards).
-	 * @return true if this deck is empty, false otherwise.
-	 */
+	public Piece pieceAt(int k) { //iterate through deck
+		return pieces.get(k);
+	}
+
+	public Piece pieceAt(Coord coord) {
+		for(int i = 0; i < pieces.size(); i++) {
+			if(pieces.get(i).getCoordinates().equals(coord)) {
+				return pieces.get(i);
+			}
+		}
+
+		throw new RuntimeException("Could not find piece at coordinate " + coord.toString());
+	}
+
+	public int getDeckValue() {
+		int sum = 0;
+
+		for(int i = 0;i < pieces.size();i++) {
+			sum += pieces.get(i).getValue();
+		}
+
+		return sum;
+	}
+
 	public boolean isEmpty() {
-		/* *** TO BE IMPLEMENTED IN ACTIVITY 2 *** */
-		if(size == 0)
+		if(pieces.size() == 0)
 			return true;
 		else
 			return false;
 	}
 
-	/**
-	 * Accesses the number of undealt cards in this deck.
-	 * @return the number of undealt cards in this deck.
-	 */
-	public int size() {
-		/* *** TO BE IMPLEMENTED IN ACTIVITY 2 *** */
-		return size;
+	public int getSize() {
+		return pieces.size();
 	}
 
-	/**
-	 * Randomly permute the given collection of cards
-	 * and reset the size to represent the entire deck.
-	 */
-	public void shuffle() {
-		/* *** TO BE IMPLEMENTED IN ACTIVITY 4 *** */
-		for(int i = 0;i<cards.size();i++)
-		{
-			int tempNum = (int)(Math.random()*52);
-			Card tempCard = cards.get(tempNum);
-			cards.remove(tempNum);
-			cards.add(tempNum, cards.get(cards.size()-1));
-			cards.remove(cards.size()-1);
-			cards.add(tempCard);
-		}
-		size = cards.size(); // resets deck "size"
-	}
-
-	/**
-	 * Deals a card from this deck.
-	 * @return the card just dealt, or null if all the cards have been
-	 *         previously dealt.
-	 */
-	public Card deal() {
-		/* *** TO BE IMPLEMENTED IN ACTIVITY 2 *** */
-		if(size == 0)
-		{
-			return null;
-		}
-		else
-		{
-			size--;
-			return cards.get(size);
-		}
-	}
-
-	/**
-	 * Generates and returns a string representation of this deck.
-	 * @return a string representation of this deck.
-	 */
-	@Override
-	public String toString() {
-		String rtn = "size = " + size + "\nUndealt cards: \n";
-
-		for (int k = size - 1; k >= 0; k--) {
-			rtn = rtn + cards.get(k);
-			if (k != 0) {
-				rtn = rtn + ", ";
-			}
-			if ((size - k) % 2 == 0) {
-				// Insert carriage returns so entire deck is visible on console.
-				rtn = rtn + "\n";
-			}
-		}
-
-		rtn = rtn + "\nDealt cards: \n";
-		for (int k = cards.size() - 1; k >= size; k--) {
-			rtn = rtn + cards.get(k);
-			if (k != size) {
-				rtn = rtn + ", ";
-			}
-			if ((k - cards.size()) % 2 == 0) {
-				// Insert carriage returns so entire deck is visible on console.
-				rtn = rtn + "\n";
-			}
-		}
-
-		rtn = rtn + "\n";
-		return rtn;
+	public String deckType() {
+		return deckType;
 	}
 }

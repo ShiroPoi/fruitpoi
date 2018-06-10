@@ -1,45 +1,67 @@
+package Game;
 import java.util.List;
 import java.util.ArrayList;
 
 /**
- * The ElevensBoard class represents the board in a game of Elevens.
+ * The ShogiBoard class represents the board in a game of Shogi.
  */
-public class ElevensBoard extends Board {
+public class ShogiBoard extends Board {
 
-	/**
-	 * The size (number of cards) on the board.
-	 */
-   private static final int BOARD_SIZE = 9;
+  //9x9 board bottom left 0,0 and top right 8,8
+  private static final int leastCoordX = 0;
+  private static final int maxCoordX = 8;
+  private static final int leastCoordY = 0;
+  private static final int maxCoordY = 8;
 
-	/**
-	 * The ranks of the cards for this game to be sent to the deck.
-	 */
-   private static final String[] RANKS =
-   	{"ace", "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king"};
+  private Piece[][] initialPieces;
 
-	/**
-	 * The suits of the cards for this game to be sent to the deck.
-	 */
-   private static final String[] SUITS =
-   	{"spades", "hearts", "diamonds", "clubs"};
+   public ShogiBoard(Player[] players) { // ideally only 2 players
+     initialPieces = new Piece[2][20];
 
-	/**
-	 * The values of the cards for this game to be sent to the deck.
-	 */
-   private static final int[] POINT_VALUES =
-   	{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 0, 0, 0};
+     //setting up pieces in Itou order
+     //first is king
+     initialPieces[0][0] = new Piece(4, 0, Type.KING, players[0]); //first player
+     initialPieces[1][0] = new Piece(4, 8, Type.KING, players[1]); //second player
 
-	/**
-	 * Flag used to control debugging print statements.
-	 */
-   private static final boolean I_AM_DEBUGGING = false;
+     //next are gold generals
+     initialPieces[0][1] = new Piece(3, 0, Type.GOLD, players[0]);
+     initialPieces[1][1] = new Piece(5, 8, Type.GOLD, players[1]);
+     initialPieces[0][2] = new Piece(5, 0, Type.GOLD, players[0]);
+     initialPieces[1][2] = new Piece(3, 8, Type.GOLD, players[1]);
 
+     //next are silver generals
+     initialPieces[0][3] = new Piece(2, 0, Type.SILVER, players[0]);
+     initialPieces[1][3] = new Piece(6, 8, Type.SILVER, players[1]);
+     initialPieces[0][4] = new Piece(6, 0, Type.SILVER, players[0]);
+     initialPieces[1][4] = new Piece(2, 8, Type.SILVER, players[1]);
 
-	/**
-	 * Creates a new <code>ElevensBoard</code> instance.
-	 */
-   public ElevensBoard() {
-      super(BOARD_SIZE, RANKS, SUITS, POINT_VALUES);
+     //next are knights
+     initialPieces[0][5] = new Piece(1, 0, Type.KNIGHT, players[0]);
+     initialPieces[1][5] = new Piece(7, 8, Type.KNIGHT, players[1]);
+     initialPieces[0][6] = new Piece(7, 0, Type.KNIGHT, players[0]);
+     initialPieces[1][6] = new Piece(1, 8, Type.KNIGHT, players[1]);
+
+     //next are pawns
+     for(int i = leastCoordX; i < maxCoordX; i++) { // doing pawns
+       initialPieces[0][i+7] = new Piece(i, 2, Type.PAWN, players[0]);
+       initialPieces[1][i+7] = new Piece(8-i, 6, Type.PAWN, players[1]);
+     }
+
+     //next are lances
+     initialPieces[0][16] = new Piece(0, 0, Type.LANCE, players[0]);
+     initialPieces[1][16] = new Piece(0, 8, Type.LANCE, players[1]);
+     initialPieces[0][17] = new Piece(8, 0, Type.LANCE, players[0]);
+     initialPieces[1][17] = new Piece(8, 8, Type.LANCE, players[1]);
+
+     //next are bishop
+     initialPieces[0][18] = new Piece(1, 1, Type.BISHOP, players[0]);
+     initialPieces[1][18] = new Piece(7, 7, Type.BISHOP, players[1]);
+
+     //next are rooks
+     initialPieces[0][19] = new Piece(7, 1, Type.ROOK, players[0]);
+     initialPieces[1][19] = new Piece(1, 7, Type.ROOK, players[1]);
+
+     super(leastCoordX, maxCoordX, leastCoordY, maxCoordY, initialPieces, players);
    }
 
 	/**
@@ -54,13 +76,13 @@ public class ElevensBoard extends Board {
    @Override
    public boolean isLegal(List<Integer> selectedCards) {
    	/* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
-      
+
       /******** Cossa's pseudocode:
       1. Find out how many values are in selectedCard
       2. Based on #1 send selectedCard ArrayList to appropriate helper methods
       3. Based on what methods invoked in #2 return, have this method return
          correct boolean value
-      ***************************************/ 
+      ***************************************/
 	  if(selectedCards.size() == 2)
 	  {
 		  return containsPairSum11(selectedCards);
@@ -84,7 +106,7 @@ public class ElevensBoard extends Board {
    @Override
    public boolean anotherPlayIsPossible() {
    	/* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
-       
+
        /******** Cossa's pseudocode:
        ***You need to look at all the cards on the board
           and see if there is another play possible***
@@ -92,8 +114,8 @@ public class ElevensBoard extends Board {
       2. Send the values from #1 to appropriate helper methods
       3. Based on what methods invoked in #2 return, have this method return
          correct boolean value
-      ***************************************/ 
-	   
+      ***************************************/
+
 	   if(containsPairSum11(cardIndexes()) == true || containsJQK(cardIndexes()) == true)
 	   {
 		   return true;
@@ -112,20 +134,20 @@ public class ElevensBoard extends Board {
 	 */
    private boolean containsPairSum11(List<Integer> selectedCards) {
    	/* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
-       
+
        /******** Cossa's pseudocode:
        ***Remember the selectedCard ArrayList could have more than 2 values
-          because sometimes this method is executed with all of the 
-          cards left on the board and sometimes it is executed with only 
+          because sometimes this method is executed with all of the
+          cards left on the board and sometimes it is executed with only
           the 2 cards the user selected. Therefore you need to compare
-          all of the cards in the list against each other*** 
+          all of the cards in the list against each other***
       1. Create nested loops to traverse the list
       2. Each time the outside loops starts, get the Card at that index
-      3. Each time the inside loop begins, get the Card at that index, 
-         see if it and the other card add up to 11. (The inside loop will 
+      3. Each time the inside loop begins, get the Card at that index,
+         see if it and the other card add up to 11. (The inside loop will
          compare all cards against the card from the outside loop).
-      4. Determine where and how to return the correct boolean value 
-      ***************************************/ 
+      4. Determine where and how to return the correct boolean value
+      ***************************************/
 	   /*
 	  for(int temp : selectedCards)
 	  {
@@ -133,7 +155,7 @@ public class ElevensBoard extends Board {
 	  }
 	  debug
 	  */
-	   
+
       for(int i = 0;i<selectedCards.size()-1;i++)
       {
     	  for(int j = i;j<selectedCards.size()-1;j++)
@@ -161,19 +183,19 @@ public class ElevensBoard extends Board {
 	 */
    private boolean containsJQK(List<Integer> selectedCards) {
    	/* *** TO BE IMPLEMENTED IN ACTIVITY 9 *** */
-      
+
       /******** Cossa's pseudocode:
        ***Remember the selectedCard ArrayList could have more than 3 values
-          because sometimes this method is executed with all of the 
-          cards left on the board and sometimes it is executed with only 
+          because sometimes this method is executed with all of the
+          cards left on the board and sometimes it is executed with only
           the 3 cards the user selected. Therefore you need to compare
-          all of the cards in the list against each other*** 
+          all of the cards in the list against each other***
       1. Create a loop to traverse the list
       2. Each time the loops starts, get the Card at that index
       3. Check to see if that card is a J, Q or K
-      4. Determine how to keep track of whether or not a 
-         J, Q, and K were found and return the correct boolean value 
-      ***************************************/ 
+      4. Determine how to keep track of whether or not a
+         J, Q, and K were found and return the correct boolean value
+      ***************************************/
 	   boolean J = false, Q = false, K = false;
 	  for(int temp : selectedCards)
 	  {
@@ -201,6 +223,6 @@ public class ElevensBoard extends Board {
 		  // debug System.out.println("JQK f");
 		  return false;
 	  }
-	  
+
    }
 }
