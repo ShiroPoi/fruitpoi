@@ -3,12 +3,14 @@ package Game;
 public class Player {
     private Color color;
     private String name;
+    private Coordinate moveDir;
     private Deck currentDeck;
     private Deck holdingDeck;
 
     public Player(String name, Color color) {
       this.name = name;
       this.color = color;
+      this.moveDir = color.getMoveDir();
     }
 
     public void assignCurrentDeck(Deck newDeck) { // doubles as initial deck as well as future edits to deck
@@ -33,6 +35,10 @@ public class Player {
 
     public Color getColor() {
       return color;
+    }
+
+    public Coordinate getMoveDir() {
+      return moveDir;
     }
 
     @Override

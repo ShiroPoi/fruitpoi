@@ -19,6 +19,14 @@ public abstract class Piece {
         this.moveSqaures = new ArrayList<Coordinate>();
     }
 
+    public Piece(Coordinate coords, Type type, Player player) {
+        this.coordinates = coords;
+        this.player = player;
+        this.type = type;
+        this.promoted = false;
+        this.moveSqaures = new ArrayList<Coordinate>();
+    }
+
     public int getValue() {
       if(promoted)
         return this.type.getPromotedValue();
@@ -36,6 +44,10 @@ public abstract class Piece {
 
     public void changePlayer(Player newPlayer) {
       this.player.Color = newPlayer.Color;
+    }
+
+    public void movePiece(Coordinate coords) {
+      this.coordinates = coords;
     }
 
     public Coordinate getCoordinates() {
@@ -60,10 +72,6 @@ public abstract class Piece {
       return moveSqaures;
     }
 
-    private boolean boundCheck(Coordinate coords) {
-      return !(coords.x() > board.getMaxCoordX() || coords.x() < board.getLeastCoordX() || coords.y() > board.getMaxCoordY() || coords.y < board.getLeastCoordY()); // returns true if coordinates are legal
-    }
-
     private void clearMoveSquares() {
       moveSquares.clear();
     }
@@ -71,8 +79,40 @@ public abstract class Piece {
     private void addMoveSquare(Coordinate coords) {
       moveSquares.add(coords);
     }
-//TODO CHANGE TO PASS DECK
-    public abstract void calculateMoveSquares(List<Coordinate>, List<Coordinate>, Player); // pass friendly position AND enemy moveSquares (so king can't Check himself), and current player
+
+    public abstract void calculateMoveSquares(Deck friendlyDeck, Deck enemyDeck);
+
+    private boolean boundCheck(Coordinate coords) {
+      return !(coords.x() > board.getMaxCoordX() || coords.x() < board.getLeastCoordX() || coords.y() > board.getMaxCoordY() || coords.y < board.getLeastCoordY()); // returns true if coordinates are legal
+    }
+
+
+    private boolean checkMove(Coordinate coords, Deck friendlyDeck) {
+      for(int i = 0; i < friendlyDeck.getSize(); i++) {
+        if(coords.equals(friendlyDeck.pieceAt(i).getCoordinates())) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    private boolean kingDangerCheck(Coordinate movingPieceCoords, Coordinate newCoords, Deck friendlyDeck, Deck enemyDeck) {
+        Piece testingPiece = friendlyDeck.getPiece(movingPieceCoords);
+        testingPiece.movePiece(newCoords);
+        friendlyDeck.removePiece(movingPieceCoords);
+        friendlyDeck.addPiece(testingPiece);
+
+        calculateMoveSquares(enemyDeck,friendlyDeck);
+        for(Piece p : enemyDeck) {
+          if(p.getMoveSqaures().contains(friendlyDeck.getKingCoord())) {
+            return true;
+          }
+        }
+
+        return false;
+    }
+
 
     //public abstract boolean isValidPath(int finalX, int finalY);
 

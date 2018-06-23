@@ -9,23 +9,20 @@ public class Pawn extends Piece{
     }
 
     @Override
-    public void calculateMoveSquares(List<Coordinate> friendlyPositions, List<Coordinate> enemyMoves) {
+    public void calculateMoveSquares(Deck friendlyDeck, Deck enemyDeck) {
       clearMoveSquares(); // Clean our lists
 
-      int moveDir = 1; // moving UP the board from the bottom
-      if(player.getColor() == Color.RED) {
-        moveDir = -1;
-      }
+      Coordinate moveDir = friendlyDeck.getPlayer().getMoveDir();
 
       if(promoted) { // move as Gold General if promoted
 
       } else {
         //see if pawn can move forward
-        Coordinate test = new Coordinate(this.Coordinate.x(), this.Coordinate.y() + moveDir);
-        boolean movePossible = boundCheck(test);
+        Coordinate testCoord = new Coordinate(this.Coordinate.x(), this.Coordinate.y() + moveDir.y());
+        boolean movePossible = boundCheck(testCoord);
         if(movePossible) { // don't bother checking if the test coordinates are out of bounds
-          movePossible = checkMove(test);
-          movePossible = kingDangerCheck(test); // TODO
+          movePossible = checkMove(testCoord, friendlyDeck);
+          movePossible = kingDangerCheck(this.getCoordinates(), testCoord, friendlyDeck, enemyDeck);
           if(movePossible) {
             addMoveSquare(test);
           }
@@ -33,13 +30,7 @@ public class Pawn extends Piece{
       }
     }
 
-    private boolean checkMove(Coordinate coords) {
-      for(Coordinate k : friendlyPositions) {
-        if(test.equals(k)) {
-          movePossible = false;
-        }
-      }
-    }
+
 
     /*(public boolean isValidPath(int finalX, int finalY){
         int xDiff = Math.abs(finalX - this.x);
